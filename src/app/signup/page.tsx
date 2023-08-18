@@ -20,6 +20,9 @@ export default function Signup() {
     try {
       setLoading(true);
       const { data } = await axios.post("/api/users/signup", user);
+      if (data.error) {
+        return toast.error(data.error);
+      }
       console.log("signup response is", data);
       router.push("/login");
     } catch (error: any) {
@@ -30,7 +33,7 @@ export default function Signup() {
   };
   return (
     <div className="flex flex-col items-center justify-center min-h-screen py-2">
-      <h1>Signup</h1>
+      <h1>{loading ? "Signing Up..." : "Signup"}</h1>
       <hr />
       <label htmlFor="username">Username</label>
       <input

@@ -1,15 +1,36 @@
 "use client";
+import axios from "axios";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
+import { toast } from "react-toastify";
 export default function Login() {
   const [user, setUser] = useState({
     email: "",
     password: "",
   });
-  const login = async () => {};
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+
+  const login = async () => {
+    if (!user.email || !user.password) {
+      return toast.error("All fields are mandatory");
+    }
+    try {
+      setLoading(true);
+      const { data } = await axios.post("/api/users/login", user);
+      console.log("login response is", data);
+      toast.success(JSON.stringify(data));
+      router.push(`/profile/${data.user._id}`);
+    } catch (error: any) {
+      toast.error(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <div className="flex flex-col items-center justify-center min-h-screen py-2">
-      <h1 className="text-2xl mb-3">Login</h1>
+      <h1 className="text-2xl mb-3">{loading ? "Logging In..." : "Login"}</h1>
       <hr className="bg-black w-full" />
 
       <label htmlFor="email">Email</label>
