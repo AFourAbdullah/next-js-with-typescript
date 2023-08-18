@@ -1,13 +1,33 @@
 "use client";
+import axios from "axios";
 import Link from "next/link";
-import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+import React, { useState, useEffect } from "react";
+import { toast } from "react-toastify";
 export default function Signup() {
+  const router = useRouter();
   const [user, setUser] = useState({
-    name: "",
+    username: "",
     email: "",
     password: "",
   });
-  const signup = async () => {};
+  const [loading, setLoading] = useState(false);
+  useEffect(() => {}, [user]);
+  const signup = async () => {
+    if (!user.email || !user.password || !user.username) {
+      return toast.error("All fields are mandatory");
+    }
+    try {
+      setLoading(true);
+      const { data } = await axios.post("/api/users/signup", user);
+      console.log("signup response is", data);
+      router.push("/login");
+    } catch (error: any) {
+      toast.error(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <div className="flex flex-col items-center justify-center min-h-screen py-2">
       <h1>Signup</h1>
@@ -18,8 +38,8 @@ export default function Signup() {
         type="text"
         placeholder="username..."
         id="username"
-        value={user.name}
-        onChange={(e) => setUser({ ...user, name: e.target.value })}
+        value={user.username}
+        onChange={(e) => setUser({ ...user, username: e.target.value })}
       />
       <label htmlFor="email">Email</label>
       <input
