@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { useState } from "react";
 
-export default function userProfile({ params }: any) {
+export default function UserProfile({ params }: any) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
